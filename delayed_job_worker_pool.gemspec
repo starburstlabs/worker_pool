@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  spec.executables   = ['delayed_job_worker_pool']
+  spec.executables   = ['worker_pool']
   spec.require_paths = ['lib']
 
   spec.required_ruby_version = '>= 2.5'
