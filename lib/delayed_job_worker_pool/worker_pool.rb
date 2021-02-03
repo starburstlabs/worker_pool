@@ -109,6 +109,7 @@ module DelayedJobWorkerPool
       invoke_callback(:after_worker_shutdown, worker_info(worker_pid, group))
 
       registry.remove_worker(worker_pid)
+      # FIXME: we lose worker_number here
       fork_worker(group) unless shutting_down
     end
 
