@@ -4,7 +4,6 @@ require 'spec_helper'
 require 'open3'
 require 'active_record'
 require 'active_support/all'
-require 'delayed_job_active_record'
 require_relative 'dummy/app/jobs/touch_file_job'
 
 describe DelayedJobWorkerPool do
