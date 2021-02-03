@@ -109,6 +109,7 @@ module DelayedJobWorkerPool
       invoke_callback(:after_worker_shutdown, worker_info(worker_pid, group))
 
       registry.remove_worker(worker_pid)
+      # FIXME: we lose worker_number here
       fork_worker(group) unless shutting_down
     end
 
@@ -130,12 +131,12 @@ module DelayedJobWorkerPool
 
         registry.add_group(name, group.dj_worker_options)
 
-        workers.times { fork_worker(name) }
+        workers.times { |worker_number| fork_worker(name, worker_number) }
       end
     end
 
-    def fork_worker(group)
-      worker_pid = Kernel.fork { run_worker(group) }
+    def fork_worker(group, worker_number = 0)
+      worker_pid = Kernel.fork { run_worker(group, worker_number) }
       log("Started worker in group #{group}: #{worker_pid}")
 
       registry.add_worker(group, worker_pid)
@@ -143,7 +144,7 @@ module DelayedJobWorkerPool
       invoke_callback(:after_worker_boot, worker_info(worker_pid, group))
     end
 
-    def run_worker(group)
+    def run_worker(group, worker_number = 0)
       master_alive_write_pipe.close
 
       uninstall_signal_handlers
@@ -158,7 +159,7 @@ module DelayedJobWorkerPool
 
       invoke_callback(:on_worker_boot, worker_info(Process.pid, group))
 
-      DelayedJobWorkerPool::Worker.run(worker_options(Process.pid, group))
+      DelayedJobWorkerPool::Worker.run(worker_options(Process.pid, group), worker_number)
     rescue StandardError => e
       log("Worker failed with error: #{e.message}\n#{e.backtrace.join("\n")}")
       exit(1)

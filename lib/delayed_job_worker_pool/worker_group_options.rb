@@ -2,7 +2,7 @@
 
 module DelayedJobWorkerPool
   class WorkerGroupOptions
-    DJ_SETTINGS = [:queues, :min_priority, :max_priority, :sleep_delay, :read_ahead].freeze
+    DJ_SETTINGS = [:queues, :min_priority, :max_priority, :sleep_delay, :read_ahead, :worker_factory].freeze
     GROUP_SETTINGS = [:workers].freeze
 
     attr_accessor *DJ_SETTINGS, *GROUP_SETTINGS
